@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS tickets (
     description TEXT,
     priority ENUM('low', 'medium', 'high', 'critical') DEFAULT 'medium',
     status ENUM('open', 'in_progress', 'resolved', 'closed') DEFAULT 'open',
-    asset_id INT,
-    created_by INT,
-    assigned_to INT,
+    asset_id INT NULL,
+    created_by INT NULL,
+    assigned_to INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
@@ -46,13 +46,13 @@ CREATE TABLE IF NOT EXISTS tickets (
     INDEX idx_asset_id (asset_id)
 );
 
+
 -- Seed demo users
--- Username: admin | Password: Admin123!
--- Username: tech1 | Password: Tech123!
 
 INSERT INTO users (username, email, password_hash, role) VALUES
-('admin', 'admin@servicedesk.local', '$2y$10$n2xYA29GPdDEAG5A3Qzf2.MelpG7ymEFPYitEXk2sMU5mfJ6jddKy', 'admin'),
-('tech1', 'tech1@servicedesk.local', '$2y$10$nUgeV2M6jFX4kszxxMFKDeixCchm1UWAbmYFPwf36ALIR233Vc2DK', 'tech');
+('admin', 'admin@servicedesk.local', '...', 'admin'),
+('tech1', 'tech1@servicedesk.local', '...', 'tech')
+ON DUPLICATE KEY UPDATE email=VALUES(email), password_hash=VALUES(password_hash), role=VALUES(role);
 
 -- Seed demo assets
 
