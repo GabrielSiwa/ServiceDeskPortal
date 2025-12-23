@@ -22,23 +22,19 @@ class Database
             return self::$pdo;
         }
 
-        $dsn = sprintf(
-            "mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4",
-            DB_HOST,
-            DB_PORT,
-            DB_NAME
-        );
-        
-        self::$pdo = new PDO(
-            $dsn,
-            DB_USER,
-            DB_PASS,
-            [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]
-        );
+        $mysqlUrl = env('MYSQL_URL');
+        if ($mysqlUrl) {
+            self::$pdo = new PDO($mysqlUrl);
+        } else {
+            // Fallback to individual variables for local dev
+            $dsn = sprintf(
+                'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+                env('MYSQLHOST', 'localhost'),
+                env('MYSQLPORT', 3306),
+                env('MYSQLDATABASE', 'service_desk')
+            );
+            self::$pdo = new PDO($dsn, env('MYSQLUSER', 'root'), env('MYSQLPASSWORD', ''));
+        }
 
         return self::$pdo;
     }
