@@ -9,12 +9,16 @@ foreach (explode(';', $schema) as $statement) {
         try {
             Database::connect()->exec($statement);
         } catch (Exception $e) {
-            // Ignore errors (e.g., table already exists)
-            echo "[Schema] " . $e->getMessage() . "\n";
+            // Ignore errors (e.g., table already exists, duplicate inserts)
+            // Only log critical errors
+            if (strpos($e->getMessage(), 'already exists') === false && 
+                strpos($e->getMessage(), 'Duplicate entry') === false) {
+                echo "[Schema] " . $e->getMessage() . "\n";
+            }
         }
     }
 }
-echo "Schema created\n";
+echo "Schema ready\n";
 
 // 2. Seed users
 require __DIR__ . '/src/seed.php';

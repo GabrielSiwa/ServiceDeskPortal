@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/db.php';
 
 $adminPass = getenv('SEED_ADMIN_PASSWORD') ?: 'Admin123!';
 $techPass  = getenv('SEED_TECH_PASSWORD')  ?: 'Tech123!';
