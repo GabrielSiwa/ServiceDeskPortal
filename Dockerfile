@@ -12,8 +12,8 @@ COPY . .
 # Expose port
 EXPOSE 8080
 
-# Run migrations on startup
-RUN php src/migrations.php || true
+# Create startup script
+RUN echo '#!/bin/bash\nphp /app/src/migrations.php\nphp -S 0.0.0.0:8080 -t public' > /start.sh && chmod +x /start.sh
 
-# Run built-in PHP server
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+# Run startup script
+CMD ["/start.sh"]
