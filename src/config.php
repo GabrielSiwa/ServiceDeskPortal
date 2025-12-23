@@ -10,8 +10,8 @@ $DB_NAME = env('MYSQLDATABASE', 'service_desk');
 $DB_USER = env('MYSQLUSER', 'root');
 $DB_PASS = env('MYSQLPASSWORD', '');
 
-$SESSION_NAME = env('SESSION_NAME', 'ServiceDeskSession');
-$SESSION_TIMEOUT = (int)env('SESSION_TIMEOUT', 3600);
+define('SESSION_NAME', env('SESSION_NAME', 'ServiceDeskSession'));
+define('SESSION_TIMEOUT', (int)env('SESSION_TIMEOUT', 3600));
 $APP_ENV = env('APP_ENV', 'development');
 
 const VALID_STATUSES = ['open', 'in_progress', 'resolved'];
