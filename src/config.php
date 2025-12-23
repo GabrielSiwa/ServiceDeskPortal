@@ -8,11 +8,11 @@ if (!defined('BASE_PATH')) {
 require_once BASE_PATH . '/src/env.php';
 
 // Database credentials from environment variables
-$DB_HOST = env('MYSQLHOST', 'localhost');
-$DB_PORT = (int)env('MYSQLPORT', 3306);
-$DB_NAME = env('MYSQLDATABASE', 'service_desk');
-$DB_USER = env('MYSQLUSER', 'root');
-$DB_PASS = env('MYSQLPASSWORD', '');
+define('DB_HOST', env('MYSQLHOST', 'localhost'));
+define('DB_PORT', (int)env('MYSQLPORT', 3306));
+define('DB_NAME', env('MYSQLDATABASE', 'service_desk'));
+define('DB_USER', env('MYSQLUSER', 'root'));
+define('DB_PASS', env('MYSQLPASSWORD', ''));
 
 define('SESSION_NAME', env('SESSION_NAME', 'ServiceDeskSession'));
 define('SESSION_TIMEOUT', (int)env('SESSION_TIMEOUT', 3600));
