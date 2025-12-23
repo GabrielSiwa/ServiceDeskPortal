@@ -61,6 +61,21 @@ function runMigrations() {
         ");
         echo "[SUCCESS] Tickets table created/exists\n";
 
+        // Create assets table
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS assets (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(100) NOT NULL,
+                asset_type VARCHAR(50) NOT NULL,
+                serial_number VARCHAR(100) UNIQUE,
+                location VARCHAR(100),
+                status ENUM('active', 'inactive', 'retired') DEFAULT 'active',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        ");
+        echo "[SUCCESS] Assets table created/exists\n";
+
         // Seed demo users
         try {
             $pdo->exec("
@@ -91,10 +106,10 @@ function runMigrations() {
         // Seed demo tickets
         try {
             $pdo->exec("
-                INSERT INTO tickets (title, description, priority, status, asset_id, created_by, assigned_to) VALUES
-                ('Printer jam in reception', 'Paper jam in office printer, needs clearing', 'medium', 'open', 1, 1, 2),
-                ('Server backup verification', 'Check last backup logs and verify integrity', 'high', 'in_progress', 2, 1, 2),
-                ('Laptop not starting', 'Dell laptop at desk 5 will not power on', 'high', 'open', 3, 1, NULL)
+                INSERT INTO tickets (title, description, priority, status, user_id, assigned_to) VALUES
+                ('Printer jam in reception', 'Paper jam in office printer, needs clearing', 'medium', 'open', 1, 2),
+                ('Server backup verification', 'Check last backup logs and verify integrity', 'high', 'in_progress', 1, 2),
+                ('Laptop not starting', 'Dell laptop at desk 5 will not power on', 'high', 'open', 1, NULL)
                 ON DUPLICATE KEY UPDATE id=id
             ");
             echo "[SUCCESS] Demo tickets seeded\n";
