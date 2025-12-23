@@ -27,7 +27,7 @@ if [ -n "$MYSQLHOST" ] && [ -n "$MYSQLUSER" ] && [ -n "$MYSQLDATABASE" ]; then\n
   echo "Waiting for MySQL to be ready..."\n\
   sleep 5\n\
   echo "Setting up database..."\n\
-  mysql -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASSWORD $MYSQLDATABASE --ssl-mode=DISABLED < schema.sql && echo "Database initialized successfully!" || echo "Warning: Database setup failed or already initialized"\n\
+  mysql -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASSWORD $MYSQLDATABASE < schema.sql && echo "Database initialized successfully!" || echo "Warning: Database setup failed or already initialized"\n\
 else\n\
   echo "ERROR: Missing required MySQL environment variables"\n\
   exit 1\n\
