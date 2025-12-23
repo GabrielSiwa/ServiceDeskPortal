@@ -17,11 +17,22 @@ RUN apt-get update && apt-get install -y mariadb-client && rm -rf /var/lib/apt/l
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
-if [ -n "$MYSQLHOST" ] && [ -n "$MYSQLUSER" ] && [ -n "$MYSQLPASSWORD" ] && [ -n "$MYSQLDATABASE" ]; then\n\
+set -e\n\
+echo "Environment variables:"\n\
+echo "MYSQLHOST=$MYSQLHOST"\n\
+echo "MYSQLUSER=$MYSQLUSER"\n\
+echo "MYSQLDATABASE=$MYSQLDATABASE"\n\
+echo ""\n\
+if [ -n "$MYSQLHOST" ] && [ -n "$MYSQLUSER" ] && [ -n "$MYSQLDATABASE" ]; then\n\
+  echo "Waiting for MySQL to be ready..."\n\
+  sleep 5\n\
   echo "Setting up database..."\n\
-  mysql -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASSWORD $MYSQLDATABASE < schema.sql 2>/dev/null || echo "Database already initialized or connection failed"\n\
+  mysql -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASSWORD $MYSQLDATABASE < schema.sql && echo "Database initialized successfully!" || echo "Warning: Database setup failed or already initialized"\n\
+else\n\
+  echo "ERROR: Missing required MySQL environment variables"\n\
+  exit 1\n\
 fi\n\
-echo "Starting PHP server..."\n\
+echo "Starting PHP server on 0.0.0.0:8080..."\n\
 php -S 0.0.0.0:8080 -t public' > /app/start.sh && chmod +x /app/start.sh
 
 # Run startup script
