@@ -48,7 +48,18 @@ function loadEnv(?string $filePath = null): void
  */
 function env(string $key, mixed $default = null): mixed
 {
-    return $_ENV[$key] ?? getenv($key) ?: $default;
+    $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
+    
+    if ($value === false) {
+        return $default;
+    }
+    
+    return match($value) {
+        'true' => true,
+        'false' => false,
+        'null' => null,
+        default => $value,
+    };
 }
 
 loadEnv();
