@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Load environment variables from .env file
+ * Load environment variables from .env file (local development only)
  * 
  * @param string|null $filePath Path to .env file (defaults to project root)
  * @return void
@@ -48,7 +48,8 @@ function loadEnv(?string $filePath = null): void
  */
 function env(string $key, mixed $default = null): mixed
 {
-    $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
+    // Check in order: $_SERVER (Railway), $_ENV, getenv()
+    $value = $_SERVER[$key] ?? $_ENV[$key] ?? getenv($key);
     
     if ($value === false) {
         return $default;
@@ -62,6 +63,7 @@ function env(string $key, mixed $default = null): mixed
     };
 }
 
+// Load .env only for local development
 loadEnv();
 
 ?>
