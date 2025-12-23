@@ -13,7 +13,7 @@ COPY . .
 EXPOSE 8080
 
 # Install MySQL client
-RUN apt-get update && apt-get install -y mysql-client && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y mariadb-client && rm -rf /var/lib/apt/lists/*
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
