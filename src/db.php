@@ -24,7 +24,16 @@ class Database
 
         $mysqlUrl = env('MYSQL_URL');
         if ($mysqlUrl) {
-            self::$pdo = new PDO($mysqlUrl);
+            $parsed = parse_url($mysqlUrl);
+            $dsn = sprintf(
+                'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+                $parsed['host'] ?? 'localhost',
+                $parsed['port'] ?? 3306,
+                ltrim($parsed['path'] ?? '/service_desk', '/')
+            );
+            $user = $parsed['user'] ?? 'root';
+            $pass = $parsed['pass'] ?? '';
+            self::$pdo = new PDO($dsn, $user, $pass);
         } else {
             // Fallback to individual variables for local dev
             $dsn = sprintf(
