@@ -12,4 +12,4 @@ COPY . .
 EXPOSE 8080
 
 # Start the PHP built-in web server
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+CMD ["sh", "-c", "php scripts/seed_users.php && php -S 0.0.0.0:${PORT:-8080} -t public"]

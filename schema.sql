@@ -47,13 +47,6 @@ CREATE TABLE IF NOT EXISTS tickets (
 );
 
 
--- Seed demo users
-
-INSERT INTO users (username, email, password_hash, role) VALUES
-('admin', 'admin@servicedesk.local', '...', 'admin'),
-('tech1', 'tech1@servicedesk.local', '...', 'tech')
-ON DUPLICATE KEY UPDATE email=VALUES(email), password_hash=VALUES(password_hash), role=VALUES(role);
-
 -- Seed demo assets
 
 INSERT INTO assets (name, asset_type, serial_number, location, status) VALUES
