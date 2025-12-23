@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS tickets (
 -- Username: tech1 | Password: Tech123!
 
 INSERT INTO users (username, email, password_hash, role) VALUES
-('admin', 'admin@servicedesk.local', '$2y$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36DxYXte', 'admin'),
-('tech1', 'tech1@servicedesk.local', '$2y$10$V4ODQv6m7yRFQa0/pxLsHeJ8qb3d4KwDYaVxVSc9PZVbn5XdiK742', 'tech');
+('admin', 'admin@servicedesk.local', '$2y$10$n2xYA29GPdDEAG5A3Qzf2.MelpG7ymEFPYitEXk2sMU5mfJ6jddKy', 'admin'),
+('tech1', 'tech1@servicedesk.local', '$2y$10$nUgeV2M6jFX4kszxxMFKDeixCchm1UWAbmYFPwf36ALIR233Vc2DK', 'tech');
 
 -- Seed demo assets
 
