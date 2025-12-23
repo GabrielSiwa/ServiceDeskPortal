@@ -1,8 +1,12 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../src/auth.php';
-require_once __DIR__ . '/../src/handlers.php';
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', dirname(__DIR__));
+}
+
+require_once BASE_PATH . '/src/auth.php';
+require_once BASE_PATH . '/src/handlers.php';
 
 $action = $_GET['action'] ?? 'dashboard';
 $message = null;

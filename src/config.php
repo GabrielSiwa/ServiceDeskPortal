@@ -1,7 +1,11 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/env.php';
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', dirname(__DIR__));
+}
+
+require_once BASE_PATH . '/src/env.php';
 
 // Database credentials from environment variables
 $DB_HOST = env('MYSQLHOST', 'localhost');
