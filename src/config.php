@@ -18,6 +18,6 @@ define('SESSION_NAME', env('SESSION_NAME', 'ServiceDeskSession'));
 define('SESSION_TIMEOUT', (int)env('SESSION_TIMEOUT', 3600));
 $APP_ENV = env('APP_ENV', 'development');
 
-const VALID_STATUSES = ['open', 'in_progress', 'resolved'];
+const VALID_STATUSES = ['open', 'in_progress', 'resolved', 'closed'];
 const VALID_PRIORITIES = ['low', 'medium', 'high'];
 const VALID_ROLES = ['admin', 'tech'];

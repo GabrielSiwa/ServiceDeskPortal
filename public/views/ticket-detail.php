@@ -5,7 +5,7 @@ $user = Auth::user();
 $ticket_id = (int)($_GET['id'] ?? 0);
 $ticket = Database::fetch('
     SELECT 
-        t.id, t.title, t.description, t.priority, t.status, 
+        t.id, t.title, t.description, t.priority, t.status,
         t.created_at, t.updated_at,
         u_created.username as created_by_name,
         u_assigned.username as assigned_to_name,
@@ -21,6 +21,9 @@ if (!$ticket) {
     http_response_code(404);
     die('Ticket not found.');
 }
+
+$isAdmin = $user['role'] === 'admin';
+$auditEntries = TicketHandler::getAuditTrail($ticket_id, 50);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,13 +89,20 @@ if (!$ticket) {
                                 <option value="open" <?= $ticket['status'] === 'open' ? 'selected' : '' ?>>Open</option>
                                 <option value="in_progress" <?= $ticket['status'] === 'in_progress' ? 'selected' : '' ?>>In Progress</option>
                                 <option value="resolved" <?= $ticket['status'] === 'resolved' ? 'selected' : '' ?>>Resolved</option>
-                                <option value="closed" <?= $ticket['status'] === 'closed' ? 'selected' : '' ?>>Closed</option>
+                                <?php if ($isAdmin): ?>
+                                    <option value="closed" <?= $ticket['status'] === 'closed' ? 'selected' : '' ?>>Closed</option>
+                                <?php endif; ?>
                             </select>
-                            <small class="text-muted">Changes via JSON-RPC API</small>
+                            <?php if ($isAdmin): ?>
+                                <small class="text-muted">Changes via JSON-RPC API</small>
+                            <?php else: ?>
+                                <small class="text-muted d-block">Setting In Progress auto-assigns this ticket to you when it is unassigned.</small>
+                                <small class="text-muted d-block">Only admins can close tickets or reassign a ticket owned by another technician.</small>
+                            <?php endif; ?>
                         </p>
                         <p>
                             <strong>Assigned To:</strong><br>
-                            <?php if ($user['role'] === 'admin'): ?>
+                            <?php if ($isAdmin): ?>
                                 <select class="form-select form-select-sm" id="assignSelect" onchange="assignTicketViaAPI(<?= $ticket['id'] ?>, this.value || null)">
                                     <option value="">Unassigned</option>
                                     <?php
@@ -114,6 +124,67 @@ if (!$ticket) {
                             <strong>Asset:</strong><br>
                             <?= $ticket['asset_name'] ? Auth::validateInput($ticket['asset_name']) : '—' ?>
                         </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Audit History</h6>
+
+                        <?php if (empty($auditEntries)): ?>
+                            <p class="text-muted mb-0">No audit events yet for this ticket.</p>
+                        <?php else: ?>
+                            <div class="list-group list-group-flush">
+                                <?php foreach ($auditEntries as $entry): ?>
+                                    <?php
+                                    $actorName = $entry['changed_by_name']
+                                        ? Auth::validateInput($entry['changed_by_name'])
+                                        : 'System';
+
+                                    $actionLabel = match ($entry['action_type']) {
+                                        'ticket_created' => 'Ticket Created',
+                                        'status_changed' => 'Status Changed',
+                                        'assignment_changed' => 'Assignment Changed',
+                                        default => 'Updated',
+                                    };
+
+                                    $oldValue = $entry['old_value'] !== null
+                                        ? Auth::validateInput($entry['old_value'])
+                                        : null;
+
+                                    $newValue = $entry['new_value'] !== null
+                                        ? Auth::validateInput($entry['new_value'])
+                                        : null;
+                                    ?>
+
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong><?= $actorName ?></strong>
+                                                <span class="badge bg-light text-dark border ms-2"><?= $actionLabel ?></span>
+                                            </div>
+                                            <small class="text-muted"><?= Auth::validateInput($entry['created_at']) ?></small>
+                                        </div>
+
+                                        <?php if ($oldValue !== null || $newValue !== null): ?>
+                                            <div class="text-muted mt-1">
+                                                <?php if ($oldValue !== null && $newValue !== null): ?>
+                                                    <?= $oldValue ?> -> <?= $newValue ?>
+                                                <?php elseif ($newValue !== null): ?>
+                                                    <?= $newValue ?>
+                                                <?php else: ?>
+                                                    <?= $oldValue ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
